@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ImageProcessActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <Button
+            android:onClick="xfermode"
+            android:textAllCaps="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="XFerMode圆角"
+            />
+
+        <Button
+            android:onClick="drawRoundRect"
+            android:textAllCaps="false"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="DrawRoundRect圆角"
+            />
+
+        <Button
+            android:onClick="clipPath"
+            android:textAllCaps="false"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ClipPath圆角"
+            />
+
+        <Button
+            android:onClick="drawPath"
+            android:textAllCaps="false"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="DrawPath圆角"
+            />
+
+        <Button
+            android:onClick="bigPicListView"
+            android:textAllCaps="false"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ListView展示大图"
+            />
+
+        <Button
+            android:onClick="bigPicRegion"
+            android:textAllCaps="false"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="BitmapRegionDecoder展示大图"
+            />
+
+        <Button
+            android:onClick="customAlign"
+            android:textAllCaps="false"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="自定义图片对齐"
+            />
+
+        <Button
+            android:onClick="fullScreenAnimation"
+            android:textAllCaps="false"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="图片库效果"
+            />
+
+        <Button
+            android:onClick="fullScreenAnimation"
+            android:textAllCaps="false"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Gif展示"
+            />
+    </LinearLayout>
+
+</ScrollView>
