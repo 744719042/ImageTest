@@ -55,6 +55,12 @@ public class ImageProcessActivity extends AppCompatActivity {
     }
 
     public void fullScreenAnimation(View View) {
+        Intent intent = new Intent(this, ImageAnimActivity.class);
+        startActivity(intent);
+    }
 
+    public void like(View View) {
+        Intent intent = new Intent(this, StateImageActivity.class);
+        startActivity(intent);
     }
 }

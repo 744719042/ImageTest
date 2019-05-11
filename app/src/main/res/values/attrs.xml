@@ -13,4 +13,8 @@
             <enum name="rightBottom" value="8" />
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="LikeImageView">
+        <attr name="liked" format="boolean" />
+    </declare-styleable>
 </resources>

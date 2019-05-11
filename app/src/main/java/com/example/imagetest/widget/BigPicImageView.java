@@ -51,7 +51,7 @@ public class BigPicImageView extends android.support.v7.widget.AppCompatImageVie
     @Override
     protected void onDraw(Canvas canvas) {
         if (bitmap == null) {
-            bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+            bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.RGB_565);
             options = new BitmapFactory.Options();
             options.inBitmap = bitmap;
         }
