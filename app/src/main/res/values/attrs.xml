@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AspectImageView">
+        <attr name="alignType" format="enum">
+            <enum name="none" value="0" />
+            <enum name="lefTop" value="1" />
+            <enum name="centerTop" value="2" />
+            <enum name="rightTop" value="3" />
+            <enum name="leftCenter" value="4" />
+            <enum name="rightCenter" value="5" />
+            <enum name="leftBottom" value="6" />
+            <enum name="centerBottom" value="7" />
+            <enum name="rightBottom" value="8" />
+        </attr>
+    </declare-styleable>
+</resources>

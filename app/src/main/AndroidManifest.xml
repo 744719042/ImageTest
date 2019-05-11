@@ -21,7 +21,8 @@
         <activity android:name=".ImageTestActivity" />
         <activity android:name=".RoundCornerActivity" />
         <activity android:name=".ListBigImageActivity" />
-        <activity android:name=".BigPicActivity"></activity>
+        <activity android:name=".BigPicActivity" />
+        <activity android:name=".AspectViewActivity"></activity>
     </application>
 
 </manifest>

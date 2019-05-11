@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.imagetest.widget.AspectImageView;
+
 public class ImageProcessActivity extends AppCompatActivity {
 
     @Override
@@ -48,7 +50,8 @@ public class ImageProcessActivity extends AppCompatActivity {
     }
 
     public void customAlign(View view) {
-
+        Intent intent = new Intent(this, AspectViewActivity.class);
+        startActivity(intent);
     }
 
     public void fullScreenAnimation(View View) {

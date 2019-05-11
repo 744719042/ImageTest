@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".AspectViewActivity">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.example.imagetest.widget.AspectImageView
+                    app:alignType="lefTop"
+                    android:src="@drawable/test"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+                <com.example.imagetest.widget.AspectImageView
+                    app:alignType="centerTop"
+                    android:src="@drawable/test"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+                <com.example.imagetest.widget.AspectImageView
+                    app:alignType="rightTop"
+                    android:src="@drawable/test"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.example.imagetest.widget.AspectImageView
+                    app:alignType="leftCenter"
+                    android:src="@drawable/test"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+                <ImageView
+                    android:src="@drawable/test"
+                    android:scaleType="centerCrop"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+                <com.example.imagetest.widget.AspectImageView
+                    app:alignType="rightCenter"
+                    android:src="@drawable/test"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.example.imagetest.widget.AspectImageView
+                    app:alignType="leftBottom"
+                    android:src="@drawable/test"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+                <com.example.imagetest.widget.AspectImageView
+                    app:alignType="centerBottom"
+                    android:src="@drawable/test"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+                <com.example.imagetest.widget.AspectImageView
+                    app:alignType="rightBottom"
+                    android:src="@drawable/test"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".AspectViewActivity">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.example.imagetest.widget.AspectImageView
+                    app:alignType="lefTop"
+                    android:src="@drawable/vtest"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+                <com.example.imagetest.widget.AspectImageView
+                    app:alignType="centerTop"
+                    android:src="@drawable/vtest"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+                <com.example.imagetest.widget.AspectImageView
+                    app:alignType="rightTop"
+                    android:src="@drawable/vtest"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.example.imagetest.widget.AspectImageView
+                    app:alignType="leftCenter"
+                    android:src="@drawable/vtest"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+                <ImageView
+                    android:src="@drawable/vtest"
+                    android:scaleType="centerCrop"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+                <com.example.imagetest.widget.AspectImageView
+                    app:alignType="rightCenter"
+                    android:src="@drawable/vtest"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.example.imagetest.widget.AspectImageView
+                    app:alignType="leftBottom"
+                    android:src="@drawable/vtest"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+                <com.example.imagetest.widget.AspectImageView
+                    app:alignType="centerBottom"
+                    android:src="@drawable/vtest"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+                <com.example.imagetest.widget.AspectImageView
+                    app:alignType="rightBottom"
+                    android:src="@drawable/vtest"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
