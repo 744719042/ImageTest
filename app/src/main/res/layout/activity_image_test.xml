@@ -44,4 +44,13 @@
         android:layout_height="wrap_content"
         android:text="View与图片"
         />
+
+    <Button
+        android:onClick="testGif"
+        android:textAllCaps="false"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gif展示"
+        />
 </LinearLayout>

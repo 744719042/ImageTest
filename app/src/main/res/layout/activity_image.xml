@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ImageActivity">
 
-    <ImageView
+    <com.example.imagetest.widget.ScaleImageView
         android:id="@+id/image"
         android:src="@drawable/scale"
         android:scaleType="matrix"

@@ -76,15 +76,6 @@
             />
 
         <Button
-            android:onClick="fullScreenAnimation"
-            android:textAllCaps="false"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="图片库效果"
-            />
-
-        <Button
             android:onClick="like"
             android:textAllCaps="false"
             android:layout_marginTop="10dp"
@@ -99,8 +90,9 @@
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Gif展示"
+            android:text="图片库效果"
             />
+
     </LinearLayout>
 
 </ScrollView>

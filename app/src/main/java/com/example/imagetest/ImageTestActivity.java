@@ -27,4 +27,8 @@ public class ImageTestActivity extends AppCompatActivity {
     public void view2Image(View view) {
 
     }
+
+    public void testGif(View view) {
+
+    }
 }
