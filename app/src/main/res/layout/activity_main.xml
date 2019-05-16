@@ -27,4 +27,13 @@
         android:text="图片处理"
         />
 
+    <Button
+        android:onClick="testMemory"
+        android:textAllCaps="false"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="测试内存大小"
+        />
+
 </LinearLayout>
