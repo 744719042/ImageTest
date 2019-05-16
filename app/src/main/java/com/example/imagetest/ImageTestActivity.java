@@ -29,12 +29,12 @@ public class ImageTestActivity extends AppCompatActivity {
     }
 
     public void view2Image(View view) {
-        Intent intent = new Intent(this, ImageLoadActivity.class);
+        Intent intent = new Intent(this, View2BitmapActivity.class);
         startActivity(intent);
     }
 
     public void testGif(View view) {
-        Intent intent = new Intent(this, GifDrawableActivity.class);
+        Intent intent = new Intent(this, View2BitmapActivity.class);
         startActivity(intent);
     }
 }

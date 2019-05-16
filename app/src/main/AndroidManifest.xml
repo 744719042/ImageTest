@@ -34,8 +34,8 @@
             android:theme="@style/NoTitleBar" />
         <activity android:name=".StateImageActivity" />
         <activity android:name=".ImageLoadActivity" />
-        <activity android:name=".GifDrawableActivity" />
         <activity android:name=".MemoryTestActivity" />
+        <activity android:name=".View2BitmapActivity"></activity>
     </application>
 
 </manifest>
