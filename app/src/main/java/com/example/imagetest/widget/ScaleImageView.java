@@ -1,6 +1,9 @@
 package com.example.imagetest.widget;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -94,6 +97,54 @@ public class ScaleImageView extends AppCompatImageView implements ViewTreeObserv
                 clipRect.set(left, top, left + width, top + height);
                 Log.e(TAG, "clipRect = " + clipRect);
                 invalidate();
+            }
+        });
+        valueAnimator.setDuration(300);
+        valueAnimator.start();
+    }
+
+    public void playExit(final Activity activity) {
+        final RectF srcRect = finalRect;
+        final RectF dstRect = src;
+        Log.e(TAG, "src = " + srcRect);
+        Log.e(TAG, "dst = " + dstRect);
+        float scale = srcRect.width() * 1.0f / dstRect.width();
+        Log.e(TAG, "scale = " + scale);
+        final float  startX = srcRect.centerX(), startY = srcRect.centerY();
+        final float endX = dstRect.centerX(), endY = dstRect.centerY();
+
+        final float startWidth = srcRect.width(), startHeight = srcRect.height();
+        final float endWidth = dstRect.width(), endHeight = dstRect.height();
+
+        valueAnimator = ValueAnimator.ofFloat(scale, 1.0f);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = (float) animation.getAnimatedValue();
+                supportMatrix.setScale(value, value, srcRect.centerX(), srcRect.centerY());
+                RectF rectF = getDrawRect();
+
+                float fraction = animation.getAnimatedFraction();
+                Log.e(TAG, "fraction = " + fraction);
+                float x = (endX - startX) * fraction + startX;
+                float y = (endY - startY) * fraction + startY;
+                supportMatrix.postTranslate(x - rectF.centerX(), y - rectF.centerY());
+
+                rectF = getDrawRect();
+                Log.e(TAG, "rectF = " + rectF);
+                float width = (endWidth - startWidth) * fraction + startWidth;
+                float height = (endHeight - startHeight) * fraction + startHeight;
+                float left = rectF.centerX() - width / 2, top = rectF.centerY() - height / 2;
+                clipRect.set(left, top, left + width, top + height);
+                Log.e(TAG, "clipRect = " + clipRect);
+                invalidate();
+            }
+        });
+        valueAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                activity.overridePendingTransition(0, 0);
+                activity.finish();
             }
         });
         valueAnimator.setDuration(300);

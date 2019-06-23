@@ -81,7 +81,7 @@ public class ImageLoadActivity extends AppCompatActivity {
     }
 
     public void showScreenInfo(View view) {
-        DisplayMetrics displayMetrics = getApplication().getResources().getDisplayMetrics();
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         Log.e(TAG, "width = " + displayMetrics.widthPixels + ", height = " + displayMetrics.heightPixels);
         Log.e(TAG, "density = " + displayMetrics.density + ", densityDpi = " + displayMetrics.densityDpi);
     }

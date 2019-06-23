@@ -19,4 +19,9 @@ public class ImageActivity extends AppCompatActivity {
         final Rect src = getIntent().getParcelableExtra("info");
         imageView.setSrc(new RectF(src.left, src.top, src.right, src.bottom));
     }
+
+    @Override
+    public void onBackPressed() {
+        imageView.playExit(this);
+    }
 }

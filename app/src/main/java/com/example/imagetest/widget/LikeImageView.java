@@ -4,11 +4,13 @@ import android.content.Context;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
+import com.example.imagetest.R;
+
 public class LikeImageView extends AppCompatImageView {
     private boolean mLiked;
 
     private static final int[] LIKED_STATE_SET = {
-            android.R.attr.state_checked
+            R.attr.state_like
     };
 
     public LikeImageView(Context context) {
