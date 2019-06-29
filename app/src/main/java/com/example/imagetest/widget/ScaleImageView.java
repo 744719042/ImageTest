@@ -28,7 +28,7 @@ public class ScaleImageView extends AppCompatImageView implements ViewTreeObserv
     private RectF clipRect;
     private RectF tmpRect;
     private boolean firstInit = true;
-    private RectF src;
+    private RectF srcRect;
     private ValueAnimator valueAnimator;
 
     public ScaleImageView(Context context) {
@@ -57,30 +57,31 @@ public class ScaleImageView extends AppCompatImageView implements ViewTreeObserv
         finalRect = new RectF();
         clipRect = new RectF();
         tmpRect = new RectF();
+        setScaleType(ScaleType.MATRIX);
     }
 
-    public void setSrc(RectF src) {
-        this.src = src;
-        Log.e(TAG, "src = " + src);
+    public void setSrc(RectF srcRect) {
+        this.srcRect = srcRect;
+        Log.e(TAG, "src = " + srcRect);
     }
 
-    private void animFrom(final RectF src) {
-        Log.e(TAG, "src = " + src);
-        Log.e(TAG, "dst = " + finalClipRect);
-        float scale = src.width() * 1.0f / finalClipRect.width();
+    private void animFrom(final RectF srcRect) {
+        Log.e(TAG, "src = " + srcRect);
+        Log.e(TAG, "dst = " + finalRect);
+        float scale = srcRect.width() * 1.0f / finalRect.width();
         Log.e(TAG, "scale = " + scale);
-        final float  startX = src.centerX(), startY = src.centerY();
+        final float  startX = srcRect.centerX(), startY = srcRect.centerY();
         final float endX = finalRect.centerX(), endY = finalRect.centerY();
 
-        final float startWidth = src.width(), startHeight = src.height();
-        final float endWidth = finalClipRect.width(), endHeight = finalClipRect.height();
+        final float startWidth = srcRect.width(), startHeight = srcRect.height();
+        final float endWidth = finalRect.width(), endHeight = finalRect.height();
 
         valueAnimator = ValueAnimator.ofFloat(scale, 1.0f);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
-                supportMatrix.setScale(value, value, src.centerX(), src.centerY());
+                supportMatrix.setScale(value, value, srcRect.centerX(), srcRect.centerY());
                 RectF rectF = getDrawRect();
 
                 float fraction = animation.getAnimatedFraction();
@@ -104,16 +105,16 @@ public class ScaleImageView extends AppCompatImageView implements ViewTreeObserv
     }
 
     public void playExit(final Activity activity) {
-        final RectF srcRect = finalRect;
-        final RectF dstRect = src;
-        Log.e(TAG, "src = " + srcRect);
+        final RectF startRect = finalRect;
+        final RectF dstRect = srcRect;
+        Log.e(TAG, "src = " + startRect);
         Log.e(TAG, "dst = " + dstRect);
-        float scale = srcRect.width() * 1.0f / dstRect.width();
+        float scale = startRect.width() * 1.0f / dstRect.width();
         Log.e(TAG, "scale = " + scale);
-        final float  startX = srcRect.centerX(), startY = srcRect.centerY();
+        final float  startX = startRect.centerX(), startY = startRect.centerY();
         final float endX = dstRect.centerX(), endY = dstRect.centerY();
 
-        final float startWidth = srcRect.width(), startHeight = srcRect.height();
+        final float startWidth = startRect.width(), startHeight = startRect.height();
         final float endWidth = dstRect.width(), endHeight = dstRect.height();
 
         valueAnimator = ValueAnimator.ofFloat(scale, 1.0f);
@@ -121,7 +122,7 @@ public class ScaleImageView extends AppCompatImageView implements ViewTreeObserv
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
-                supportMatrix.setScale(value, value, srcRect.centerX(), srcRect.centerY());
+                supportMatrix.setScale(value, value, startRect.centerX(), startRect.centerY());
                 RectF rectF = getDrawRect();
 
                 float fraction = animation.getAnimatedFraction();
@@ -204,8 +205,8 @@ public class ScaleImageView extends AppCompatImageView implements ViewTreeObserv
                 Rect rect = new Rect();
                 getGlobalVisibleRect(rect, offset);
                 Log.e(TAG, "offset = " + offset);
-                src.offset(-offset.x, -offset.y);
-                animFrom(src);
+                srcRect.offset(-offset.x, -offset.y);
+                animFrom(srcRect);
                 getViewTreeObserver().removeOnPreDrawListener(this);
                 return false;
             }
