@@ -109,7 +109,7 @@ public class ScaleImageView extends AppCompatImageView implements ViewTreeObserv
         final RectF dstRect = srcRect;
         Log.e(TAG, "src = " + startRect);
         Log.e(TAG, "dst = " + dstRect);
-        float scale = startRect.width() * 1.0f / dstRect.width();
+        float scale = dstRect.width()/ startRect.width() * 1.0f;
         Log.e(TAG, "scale = " + scale);
         final float  startX = startRect.centerX(), startY = startRect.centerY();
         final float endX = dstRect.centerX(), endY = dstRect.centerY();
@@ -117,7 +117,7 @@ public class ScaleImageView extends AppCompatImageView implements ViewTreeObserv
         final float startWidth = startRect.width(), startHeight = startRect.height();
         final float endWidth = dstRect.width(), endHeight = dstRect.height();
 
-        valueAnimator = ValueAnimator.ofFloat(scale, 1.0f);
+        valueAnimator = ValueAnimator.ofFloat(1.0f, scale);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
