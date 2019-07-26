@@ -35,6 +35,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void testBlur(View view) {
+        Intent intent = new Intent(this, BlurTestActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
