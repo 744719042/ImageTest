@@ -35,7 +35,8 @@
         <activity android:name=".StateImageActivity" />
         <activity android:name=".ImageLoadActivity" />
         <activity android:name=".MemoryTestActivity" />
-        <activity android:name=".View2BitmapActivity"></activity>
+        <activity android:name=".View2BitmapActivity" />
+        <activity android:name=".GifTestActivity"></activity>
     </application>
 
 </manifest>
