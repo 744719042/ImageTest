@@ -39,6 +39,7 @@
         <activity android:name=".BlurTestActivity"
             android:hardwareAccelerated="false">
         </activity>
+        <activity android:name=".GifTestActivity"></activity>
     </application>
 
 </manifest>

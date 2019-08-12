@@ -34,7 +34,7 @@ public class ImageTestActivity extends AppCompatActivity {
     }
 
     public void testGif(View view) {
-        Intent intent = new Intent(this, View2BitmapActivity.class);
+        Intent intent = new Intent(this, GifTestActivity.class);
         startActivity(intent);
     }
 }
