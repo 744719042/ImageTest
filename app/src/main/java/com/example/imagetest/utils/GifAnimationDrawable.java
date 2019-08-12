@@ -52,11 +52,7 @@ public class GifAnimationDrawable extends AnimationDrawable
         addFrame(new BitmapDrawable(mTmpBitmap), mGifDecoder.getDelay(0));
         setOneShot(mGifDecoder.getLoopCount() != 0);
         setVisible(true, true);
-        if(inline){
-            loader.run();
-        }else{
-            new Thread(loader).start();
-        }
+        loader.run();
     }
 
     public boolean isDecoded(){ return decoded; }

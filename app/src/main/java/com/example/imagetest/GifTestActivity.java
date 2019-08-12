@@ -18,7 +18,18 @@ import java.io.InputStream;
 public class GifTestActivity extends AppCompatActivity {
     private static final String TAG = "GifTestActivity";
     private ImageView imageView;
-    private static byte[] gColorList;
+    private int[] gColorList;
+    private int colorListSize;
+    protected int ix, iy;
+    protected boolean interlace;
+    private int width, height;
+    protected short[] prefix;
+    protected byte[] suffix;
+    protected byte[] pixelStack;
+    protected byte[] pixels;
+    protected Bitmap image;
+    protected byte[] block = new byte[256]; // current data block
+    protected static final int MAX_STACK_SIZE = 4096;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,35 +100,193 @@ public class GifTestActivity extends AppCompatActivity {
 
     }
 
-    private static Bitmap readImageData(InputStream fis) throws Exception {
-        byte[] dataHeader = new byte[2];
-        fis.read(dataHeader);
-        int minCode = dataHeader[0] & 0xFF;
-        int length = (dataHeader[1] & 0xFF);
-        Log.e(TAG, "length = " + length);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        byte[] data = new byte[length];
-        fis.read(data);
-        bos.write(data);
-        byte[] size = new byte[1];
-        fis.read(size);
-        while ((size[0] & 0xFF) != 0) {
-            byte[] buf = new byte[size[0] & 0xFF];
-            fis.read(buf);
-            bos.write(buf);
-            fis.read(size);
-        }
-        byte[] frameData = bos.toByteArray();
-//        LzwDecompression lzwDecompression = new LzwDecompression();
-//        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(frameData);
-//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//        lzwDecompression.expand(byteArrayInputStream, byteArrayOutputStream);
-
-//        byte[] realData = byteArrayOutputStream.toByteArray();
-        return BitmapFactory.decodeByteArray(frameData, 0, frameData.length);
+    private Bitmap readImageData(InputStream fis) throws Exception {
+        decodeBitmapData(fis);
+        return image;
     }
 
-    private static void readImageDescriptor(InputStream fis) throws Exception {
+    protected void decodeBitmapData(InputStream fis) throws Exception {
+        int nullCode = -1;
+        int npix = width * height;
+        int available, clear, code_mask, code_size, end_of_information, in_code, old_code, bits, code, count, i, datum, data_size, first, top, bi, pi;
+        if ((pixels == null) || (pixels.length < npix)) {
+            pixels = new byte[npix]; // allocate new pixel array
+        }
+        if (prefix == null) {
+            prefix = new short[MAX_STACK_SIZE];
+        }
+        if (suffix == null) {
+            suffix = new byte[MAX_STACK_SIZE];
+        }
+        if (pixelStack == null) {
+            pixelStack = new byte[MAX_STACK_SIZE + 1];
+        }
+        // Initialize GIF data stream decoder.
+        data_size = fis.read();
+        clear = 1 << data_size;
+        end_of_information = clear + 1;
+        available = clear + 2;
+        old_code = nullCode;
+        code_size = data_size + 1;
+        code_mask = (1 << code_size) - 1;
+        for (code = 0; code < clear; code++) {
+            prefix[code] = 0; // XXX ArrayIndexOutOfBoundsException
+            suffix[code] = (byte) code;
+        }
+        // Decode GIF pixel stream.
+        datum = bits = count = first = top = pi = bi = 0;
+        for (i = 0; i < npix;) {
+            if (top == 0) {
+                if (bits < code_size) {
+                    // Load bytes until there are enough bits for a code.
+                    if (count == 0) {
+                        // Read a new data block.
+                        count = readBlock(fis);
+                        if (count <= 0) {
+                            break;
+                        }
+                        bi = 0;
+                    }
+                    datum += (((int) block[bi]) & 0xff) << bits;
+                    bits += 8;
+                    bi++;
+                    count--;
+                    continue;
+                }
+                // Get the next code.
+                code = datum & code_mask;
+                datum >>= code_size;
+                bits -= code_size;
+                // Interpret the code
+                if ((code > available) || (code == end_of_information)) {
+                    break;
+                }
+                if (code == clear) {
+                    // Reset decoder.
+                    code_size = data_size + 1;
+                    code_mask = (1 << code_size) - 1;
+                    available = clear + 2;
+                    old_code = nullCode;
+                    continue;
+                }
+                if (old_code == nullCode) {
+                    pixelStack[top++] = suffix[code];
+                    old_code = code;
+                    first = code;
+                    continue;
+                }
+                in_code = code;
+                if (code == available) {
+                    pixelStack[top++] = (byte) first;
+                    code = old_code;
+                }
+                while (code > clear) {
+                    pixelStack[top++] = suffix[code];
+                    code = prefix[code];
+                }
+                first = ((int) suffix[code]) & 0xff;
+                // Add a new string to the string table,
+                if (available >= MAX_STACK_SIZE) {
+                    break;
+                }
+                pixelStack[top++] = (byte) first;
+                prefix[available] = (short) old_code;
+                suffix[available] = (byte) first;
+                available++;
+                if (((available & code_mask) == 0) && (available < MAX_STACK_SIZE)) {
+                    code_size++;
+                    code_mask += available;
+                }
+                old_code = in_code;
+            }
+            // Pop a pixel off the pixel stack.
+            top--;
+            pixels[pi++] = pixelStack[top];
+            i++;
+        }
+        for (i = pi; i < npix; i++) {
+            pixels[i] = 0; // clear missing pixels
+        }
+
+        setPixels();
+    }
+
+    protected void setPixels() {
+        // expose destination image's pixels as int array
+        int[] dest = new int[width * height];
+        // fill in starting image contents based on last image's dispose code
+        // copy each source line to the appropriate place in the destination
+        int pass = 1;
+        int inc = 8;
+        int iline = 0;
+        for (int i = 0; i < height; i++) {
+            int line = i;
+            if (interlace) {
+                if (iline >= height) {
+                    pass++;
+                    switch (pass) {
+                        case 2:
+                            iline = 4;
+                            break;
+                        case 3:
+                            iline = 2;
+                            inc = 4;
+                            break;
+                        case 4:
+                            iline = 1;
+                            inc = 2;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                line = iline;
+                iline += inc;
+            }
+            line += iy;
+            if (line < height) {
+                int k = line * width;
+                int dx = k + ix; // start of line in dest
+                int dlim = dx + width; // end of dest line
+                if ((k + width) < dlim) {
+                    dlim = k + width; // past dest edge
+                }
+                int sx = i * width; // start of line in source
+                while (dx < dlim) {
+                    // map color and insert in destination
+                    int index = ((int) pixels[sx++]) & 0xff;
+                    int c = gColorList[index];
+                    if (c != 0) {
+                        dest[dx] = c;
+                    }
+                    dx++;
+                }
+            }
+        }
+        image = Bitmap.createBitmap(dest, width, height, Bitmap.Config.ARGB_4444);
+    }
+
+    protected int readBlock(InputStream fis) throws Exception {
+        int blockSize = fis.read();
+        int n = 0;
+        if (blockSize > 0) {
+            try {
+                int count = 0;
+                while (n < blockSize) {
+                    count = fis.read(block, n, blockSize - n);
+                    if (count == -1) {
+                        break;
+                    }
+                    n += count;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return n;
+    }
+
+    private void readImageDescriptor(InputStream fis) throws Exception {
         byte[] descriptor = new byte[10];
         fis.read(descriptor);
         int blockType = (descriptor[0] & 0xFF);
@@ -126,20 +295,22 @@ public class GifTestActivity extends AppCompatActivity {
 
         int lowByte = (descriptor[1] & 0xFF);
         int highByte = (descriptor[2] & 0xFF);
-        int left = ((highByte << 8) + lowByte);
+        ix = ((highByte << 8) + lowByte);
 
         lowByte = (descriptor[3] & 0xFF);
         highByte = (descriptor[4] & 0xFF);
-        int top = ((highByte << 8) + lowByte);
+        iy = ((highByte << 8) + lowByte);
 
         lowByte = (descriptor[5] & 0xFF);
         highByte = (descriptor[6] & 0xFF);
-        int width = ((highByte << 8) + lowByte);
+        width = ((highByte << 8) + lowByte);
 
         lowByte = (descriptor[7] & 0xFF);
         highByte = (descriptor[8] & 0xFF);
-        int height = ((highByte << 8) + lowByte);
-        Log.e(TAG,"left = " + left + ", top = " + top + ", width = " + width + ", height = " + height);
+        height = ((highByte << 8) + lowByte);
+        Log.e(TAG,"left = " + ix + ", top = " + iy + ", width = " + width + ", height = " + height);
+
+        interlace = (descriptor[9] & 0x40) != 0;
 
         boolean isLocalColorList = (0x80 & descriptor[9]) != 0;
         Log.e(TAG,"isLocalColorList = " + isLocalColorList);
@@ -168,7 +339,7 @@ public class GifTestActivity extends AppCompatActivity {
      delay time
      delay time占两个字节，为无符号整数，控制当前帧的展示时间，单位是10ms
      */
-    private static void readControlExtendPart(InputStream fis) throws Exception {
+    private void readControlExtendPart(InputStream fis) throws Exception {
         byte[] extendType = new byte[2];
         fis.read(extendType);
         int blockType = (extendType[0] & 0xFF);
@@ -181,9 +352,10 @@ public class GifTestActivity extends AppCompatActivity {
         byte[] controlExtendData = new byte[6];
         fis.read(controlExtendData);
 
-        System.out.println(Integer.toBinaryString(controlExtendData[1]));
+//        System.out.println(Integer.toBinaryString(controlExtendData[1]));
         // 0x01C0 = 0x0001 1100
         int disposalMethod = ((controlExtendData[1] & 0x01C0) >>> 2);
+        disposalMethod = disposalMethod == 0 ? 1 : disposalMethod;
         Log.e(TAG,"disposalMethod = " + disposalMethod);
 
         int lowByte = (controlExtendData[2] & 0xFF);
@@ -193,7 +365,7 @@ public class GifTestActivity extends AppCompatActivity {
         Log.e(TAG,"delayTime = " + delayTime);
     }
 
-    private static void readAppExtendPart(InputStream fis) throws Exception {
+    private void readAppExtendPart(InputStream fis) throws Exception {
         byte[] extendType = new byte[2];
         fis.read(extendType);
         int blockType = (extendType[0] & 0xFF);
@@ -207,14 +379,22 @@ public class GifTestActivity extends AppCompatActivity {
         fis.read(appExtendData);
     }
 
-    private static void readGlobalColorList(InputStream fis) throws Exception {
+    private void readGlobalColorList(InputStream fis) throws Exception {
         // 128 * 7 * 3 / 8 = 16 * 3 * 7
         byte[] colorList = new byte[16 * 3 * 8];
         fis.read(colorList);
-        gColorList = colorList;
+        gColorList = new int[256]; // max size to avoid bounds checks
+        int i = 0;
+        int j = 0;
+        while (i < colorListSize) {
+            int r = ((int) colorList[j++]) & 0xff;
+            int g = ((int) colorList[j++]) & 0xff;
+            int b = ((int) colorList[j++]) & 0xff;
+            gColorList[i++] = 0xff000000 | (r << 16) | (g << 8) | b;
+        }
     }
 
-    private static void readLogicScreenDescriptor(InputStream fis) throws Exception {
+    private void readLogicScreenDescriptor(InputStream fis) throws Exception {
         // 逻辑屏幕描述符，7字节
         byte[] logicScreen = new byte[7];
         fis.read(logicScreen);
@@ -230,7 +410,7 @@ public class GifTestActivity extends AppCompatActivity {
         int height = (highByte << 8) + lowByte;
         Log.e(TAG,"width = " + width + ", height = " + height);
 
-        Log.e(TAG,"logicScreen[4] = " + Integer.toBinaryString(logicScreen[4]));
+//        Log.e(TAG,"logicScreen[4] = " + Integer.toBinaryString(logicScreen[4]));
 
         // 4字节第1位表示是否包含全局颜色列表 0x80 = 0x1000 0000
         boolean globalColorList = (0x80 & logicScreen[4]) != 0;
@@ -248,7 +428,7 @@ public class GifTestActivity extends AppCompatActivity {
         // 4字节第5位表示颜色列表中颜色排序是否按照出现频率高低出现
         // 0x07 = 0x0000 0111
         int power = (0x07 & logicScreen[4]);
-        int colorListSize = (int) (Math.pow(2, power + 1));
+        colorListSize = (int) (Math.pow(2, power + 1));
         Log.e(TAG,"power = " + power + ", colorListSize = " + colorListSize);
 
         int bgIndex = (logicScreen[5] & 0xFF);
@@ -259,7 +439,7 @@ public class GifTestActivity extends AppCompatActivity {
         Log.e(TAG,"aspectFactor = " + aspectFactor);
     }
 
-    private static void readHeader(InputStream fis) throws Exception {
+    private void readHeader(InputStream fis) throws Exception {
         // GIF文件头部与版本号，6字节
         byte[] header = new byte[6];
         fis.read(header);
